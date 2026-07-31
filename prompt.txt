@@ -1,0 +1,131 @@
+Build a production-ready premium mobile-first Casino Web App using React + Vite.
+
+IMPORTANT:
+Use the connected Supabase MCP server for everything.
+Never ask me to create SQL manually.
+Create all tables, RLS policies, indexes, storage buckets, auth configuration, realtime subscriptions, and migrations automatically through the Supabase MCP.
+
+Also use the connected Stitch MCP (Google Stitch UI) to generate modern premium UI components and layouts where appropriate.
+
+Stack:
+- React + Vite
+- Tailwind CSS
+- shadcn/ui
+- Framer Motion
+- TanStack Query
+- React Hook Form
+- Zod
+- Lucide React
+- React Router
+- TypeScript
+
+Backend:
+- Supabase Auth
+- Supabase Database
+- Supabase Storage
+- Supabase Realtime
+- Supabase Edge Functions (if needed)
+
+Authentication:
+- Register
+- Login
+- Email Verification
+- Forgot Password
+- Reset Password
+- Session Persistence
+- Protected Routes
+
+Automatically create all database tables:
+- profiles
+- wallets
+- transactions
+- games
+- game_history
+- leaderboard
+- notifications
+- vip_levels
+- achievements
+- admin_users
+
+Enable:
+- RLS
+- Proper policies
+- Foreign keys
+- Indexes
+- Triggers
+- Realtime
+
+UI:
+Create every screen before implementing logic.
+
+Premium luxury casino design.
+Mobile-first (390px).
+Dark theme with gold accents.
+Glassmorphism.
+Smooth animations.
+Professional spacing.
+
+Pages:
+- Splash
+- Welcome
+- Register
+- Login
+- Dashboard
+- Games
+- Mines
+- Roulette
+- Dice
+- Coin Flip
+- Wallet
+- Leaderboard
+- Promotions
+- Profile
+- Settings
+- Notifications
+- Admin Login
+- Admin Dashboard
+
+Games:
+- Mines
+- Roulette
+- Dice
+- Coin Flip
+- Plinko
+- Wheel Spin
+- Crash
+- Hi-Lo
+- Keno
+- Dragon Tower
+- Blackjack
+- Poker
+- Baccarat
+- Slots
+
+Admin Panel:
+- User Management
+- Wallet Management
+- Transactions
+- Analytics
+- Reports
+- Game Management
+- Notifications
+- VIP Management
+
+Requirements:
+- Clean architecture
+- Responsive
+- PWA ready
+- Lazy loading
+- Error boundaries
+- Offline support
+- Environment variables
+- Production-ready code
+- No placeholder code
+
+Workflow:
+1. Build complete premium UI.
+2. Use Stitch MCP to refine and polish the UI.
+3. Use Supabase MCP to create and configure the backend automatically.
+4. Connect frontend to Supabase.
+5. Test all flows and fix errors.
+6. Prepare for Vercel deployment.

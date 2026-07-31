@@ -5,47 +5,18 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
+import { CardFace, drawCard, type CardType } from "@/components/casino/Cards";
 import { cn } from "@/lib/utils";
 
-const SUITS = ["♠", "♥", "♦", "♣"];
-const RANKS = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
 const VALUES: Record<string, number> = {
   A: 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10, J: 11, Q: 12, K: 13,
 };
 
-interface Card {
-  rank: string;
-  suit: string;
-}
-
-function drawCard(): Card {
-  return { rank: RANKS[Math.floor(Math.random() * RANKS.length)], suit: SUITS[Math.floor(Math.random() * SUITS.length)] };
-}
-
-function CardFace({ card, small }: { card: Card; small?: boolean }) {
-  const red = card.suit === "♥" || card.suit === "♦";
-  return (
-    <motion.div
-      initial={{ rotateY: 90, opacity: 0 }}
-      animate={{ rotateY: 0, opacity: 1 }}
-      className={cn(
-        "flex items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-white to-zinc-200 shadow-lg",
-        small ? "h-24 w-16" : "h-36 w-24",
-      )}
-    >
-      <div className={cn("text-center font-bold", red ? "text-red-600" : "text-zinc-900")}>
-        <p className={small ? "text-xl" : "text-3xl"}>{card.rank}</p>
-        <p className={small ? "text-lg" : "text-2xl"}>{card.suit}</p>
-      </div>
-    </motion.div>
-  );
-}
-
 export default function HiLo() {
   const engine = useGameEngine({ slug: "hilo" });
   const [bet, setBet] = useState(100);
-  const [card, setCard] = useState<Card>(() => drawCard());
-  const [history, setHistory] = useState<Card[]>([]);
+  const [card, setCard] = useState<CardType>(() => drawCard());
+  const [history, setHistory] = useState<CardType[]>([]);
   const [streak, setStreak] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [result, setResult] = useState<"win" | "loss" | null>(null);

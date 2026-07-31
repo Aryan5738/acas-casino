@@ -1,11 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowDownToLine, ArrowUpFromLine, ChevronRight, Gift, TrendingUp } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, ChevronRight, Gift, Gamepad2, TrendingUp } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWallet } from "@/contexts/WalletContext";
 import { useGames, useGameHistory, useTransactions } from "@/hooks/useGames";
 import { Header } from "@/components/layout/Header";
 import { formatCurrency, getInitials, formatTimeAgo } from "@/lib/utils";
+import { GameIcon } from "@/components/casino/gameIcons";
 import type { Game } from "@/types";
 
 export default function Dashboard() {
@@ -27,8 +28,8 @@ export default function Dashboard() {
       }`}
     >
       <div className={`bg-gradient-to-br ${game.gradient ?? "from-gold-500 to-gold-700"} absolute -right-4 -top-4 h-16 w-16 rounded-full opacity-20 blur-xl`} />
-      <div className={`flex ${large ? "h-14 w-14" : "h-10 w-10"} items-center justify-center rounded-xl border border-white/10 bg-black/40 text-2xl`}>
-        {game.icon}
+      <div className={`flex ${large ? "h-14 w-14" : "h-10 w-10"} items-center justify-center rounded-xl border border-white/10 bg-black/40`}>
+        <GameIcon slug={game.slug} size={large ? 32 : 22} />
       </div>
       <h3 className={`${large ? "mt-3 text-base" : "mt-2 text-xs"} font-bold leading-tight`}>{game.name}</h3>
       <p className="mt-0.5 text-[10px] text-muted-foreground">RTP {game.rtp}%</p>
@@ -128,7 +129,9 @@ export default function Dashboard() {
               <div className="mt-2 space-y-2">
                 {history.map((h) => (
                   <div key={h.id} className="glass flex items-center gap-3 rounded-xl px-3 py-2.5">
-                    <span className="text-lg">{h.games?.icon ?? "🎮"}</span>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/40">
+                      <GameIcon slug={h.game_slug} size={18} />
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-bold">{h.games?.name ?? h.game_slug}</p>
                       <p className="text-[10px] text-muted-foreground">{formatTimeAgo(h.created_at)}</p>
@@ -148,7 +151,19 @@ export default function Dashboard() {
               <div className="mt-2 space-y-2">
                 {transactions.map((t) => (
                   <div key={t.id} className="glass flex items-center gap-3 rounded-xl px-3 py-2.5">
-                    <span className="text-lg">{t.type === "deposit" ? "📥" : t.type === "withdraw" ? "📤" : "🎲"}</span>
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-lg bg-black/40 ${
+                        t.type === "deposit" ? "text-emerald-400" : t.type === "withdraw" ? "text-red-400" : "text-gold-400"
+                      }`}
+                    >
+                      {t.type === "deposit" ? (
+                        <ArrowDownToLine className="h-4 w-4" />
+                      ) : t.type === "withdraw" ? (
+                        <ArrowUpFromLine className="h-4 w-4" />
+                      ) : (
+                        <Gamepad2 className="h-4 w-4" />
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-bold capitalize">{t.type}</p>
                       <p className="text-[10px] text-muted-foreground">{formatTimeAgo(t.created_at)}</p>

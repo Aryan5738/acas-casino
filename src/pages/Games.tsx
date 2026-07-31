@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { FullScreenLoader, ErrorState } from "@/components/ui/feedback";
 import { Input } from "@/components/ui/input";
+import { GameIcon } from "@/components/casino/gameIcons";
 import type { Game } from "@/types";
 
 const categories = ["All", "instant", "table", "card", "lottery", "slot"];
@@ -35,8 +36,8 @@ export default function Games() {
       className="glass group relative flex aspect-[3/4] flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl p-3 transition-transform active:scale-[0.95]"
     >
       <div className={`bg-gradient-to-br ${game.gradient ?? "from-gold-500 to-gold-700"} absolute inset-0 opacity-[0.07] transition-opacity group-hover:opacity-[0.15]`} />
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-black/50 text-3xl shadow-lg">
-        {game.icon}
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/10 bg-black/50 shadow-lg">
+        <GameIcon slug={game.slug} size={34} />
       </div>
       <div className="text-center">
         <p className="text-xs font-bold leading-tight">{game.name}</p>
@@ -77,7 +78,7 @@ export default function Games() {
 
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center">
-            <span className="text-4xl">🎲</span>
+            <span className="opacity-60"><GameIcon slug="dice" size={40} /></span>
             <p className="text-sm text-muted-foreground">No games found</p>
           </div>
         ) : (

@@ -5,8 +5,12 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
+import { RocketIcon } from "@/components/casino/gameIcons";
+import { cn } from "@/lib/utils";
 
 const MULTIPLIERS = [0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000];
+const W = 320;
+const H = 200;
 
 export default function Crash() {
   const engine = useGameEngine({ slug: "crash" });
@@ -65,31 +69,65 @@ export default function Crash() {
 
   const color = phase === "crashed" ? (payout > 0 ? "text-emerald-400" : "text-red-400") : "text-gold-300";
 
+  const plotY = (m: number) => H - 20 - (Math.log10(Math.max(m, 1.001)) / Math.log10(11)) * (H - 40);
+  const plotX = (m: number) => Math.min(W - 14, ((m - 1) / 10) * W);
+
+  const curvePoints = (() => {
+    const pts: string[] = [];
+    for (let m = 1; m <= Math.max(multiplier, 1.001); m += 0.02) {
+      pts.push(`${plotX(m).toFixed(1)},${plotY(m).toFixed(1)}`);
+    }
+    return pts.join(" ");
+  })();
+
   return (
     <GameLayout slug="crash">
       <GameErrorToast error={engine.error} onClose={() => {}} />
 
-      <div className="glass relative flex h-72 flex-col items-center justify-center overflow-hidden rounded-2xl">
+      <div className="glass relative h-72 overflow-hidden rounded-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-blue-600/10" />
+        <svg viewBox={`0 0 ${W} ${H}`} className="absolute inset-x-0 top-8 mx-auto h-[200px] w-full px-4">
+          <defs>
+            <linearGradient id="crashline" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="#22d3ee" />
+              <stop offset="1" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
+          {[1, 2, 5, 10].map((g) => (
+            <g key={g}>
+              <line x1="0" y1={plotY(g)} x2={W} y2={plotY(g)} stroke="rgba(255,255,255,0.08)" strokeDasharray="3 4" />
+              <text x="6" y={plotY(g) - 3} fontSize="8" fill="rgba(255,255,255,0.35)">{g}×</text>
+            </g>
+          ))}
+          <polyline points={curvePoints} fill="none" stroke="url(#crashline)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {phase === "crashed" && payout === 0 && (
+            <g>
+              <line x1="0" y1={plotY(crashedAt)} x2={plotX(crashedAt)} y2={plotY(crashedAt)} stroke="#f87171" strokeDasharray="3 3" />
+              <line x1={plotX(crashedAt)} y1={plotY(crashedAt)} x2={plotX(crashedAt)} y2={H - 20} stroke="#f87171" strokeDasharray="3 3" />
+              <text x={plotX(crashedAt) + 4} y={plotY(crashedAt) - 4} fontSize="9" fill="#f87171" fontWeight="700">✕ {crashedAt.toFixed(2)}×</text>
+            </g>
+          )}
+        </svg>
         {phase === "running" && (
           <motion.div
-            className="absolute bottom-8 text-7xl"
-            animate={{ x: [-40, 60], y: [0, -50], rotate: [-10, 15] }}
-            transition={{ duration: 2.5, repeat: Infinity, repeatType: "mirror" }}
+            className="absolute z-10"
+            style={{ left: 24 + plotX(multiplier), top: 40 + plotY(multiplier) - 24 }}
+            animate={{ rotate: [8, -6, 8] }}
+            transition={{ duration: 1.4, repeat: Infinity, repeatType: "mirror" }}
           >
-            🚀
+            <RocketIcon size={44} />
           </motion.div>
         )}
         <motion.p
           key={phase === "running" ? "running" : "static"}
-          className={`relative z-10 font-mono text-6xl font-extrabold tabular-nums ${color}`}
-          animate={phase === "running" ? { scale: [1, 1.05, 1] } : {}}
+          className={`relative z-10 mt-3 text-center font-mono text-5xl font-extrabold tabular-nums ${color}`}
+          animate={phase === "running" ? { scale: [1, 1.04, 1] } : {}}
           transition={{ duration: 0.4, repeat: phase === "running" ? Infinity : 0 }}
         >
-          {phase === "idle" ? "Press Start" : `${multiplier.toFixed(2)}×`}
+          {phase === "idle" ? "Ready" : `${multiplier.toFixed(2)}×`}
         </motion.p>
-        <p className="relative z-10 mt-2 text-xs text-muted-foreground">
-          {phase === "crashed" ? (payout > 0 ? `Cashed out +₹${payout.toFixed(2)}!` : `Crashed at ${crashedAt.toFixed(2)}×`) : phase === "running" ? "Cash out before it crashes!" : "Next round starts now"}
+        <p className="relative z-10 mt-1 text-center text-xs text-muted-foreground">
+          {phase === "crashed" ? (payout > 0 ? `Cashed out +₹${payout.toFixed(2)}!` : `Crashed at ${crashedAt.toFixed(2)}×`) : phase === "running" ? "Cash out before it crashes!" : "Place your bet and launch"}
         </p>
       </div>
 
@@ -97,7 +135,7 @@ export default function Crash() {
         <BetControls bet={bet} setBet={setBet} max={Math.min(50000, engine.balance)} balance={engine.balance} />
         {phase === "idle" ? (
           <Button className="mt-4 w-full" size="lg" onClick={start} disabled={engine.busy}>
-            {engine.busy ? "Processing..." : "Start Game"}
+            {engine.busy ? "Processing..." : "Launch Rocket"}
           </Button>
         ) : phase === "running" ? (
           <Button className="mt-4 w-full" size="lg" variant="ghost" onClick={cashOut} disabled={engine.busy}>
@@ -116,7 +154,10 @@ export default function Crash() {
           {MULTIPLIERS.map((m) => (
             <span
               key={m}
-              className="shrink-0 rounded bg-white/5 px-2 py-1 font-mono text-[10px] font-bold text-gold-300/80"
+              className={cn(
+                "shrink-0 rounded bg-white/5 px-2 py-1 font-mono text-[10px] font-bold text-gold-300/80",
+                m >= crashedAt && phase === "crashed" && m <= 2 && "bg-red-500/20 text-red-400",
+              )}
             >
               {m}×
             </span>

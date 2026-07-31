@@ -5,9 +5,19 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
+import { GemIcon, MineIcon } from "@/components/casino/gameIcons";
 import { cn } from "@/lib/utils";
 
 const GRID_SIZE = 5;
+
+function TileLock() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" className="opacity-50">
+      <rect x="5" y="8" width="10" height="8" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M7 8V6a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  );
+}
 
 export default function Mines() {
   const engine = useGameEngine({ slug: "mines" });
@@ -79,13 +89,21 @@ export default function Mines() {
 
       <div className="mb-4 flex items-center justify-between">
         <p className="text-xs uppercase tracking-wider text-muted-foreground">Mines</p>
-        <p className="text-xs font-bold text-gold-300">Multiplier: {started && !gameOver ? multiplier.toFixed(2) : "1.00"}×</p>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 px-3 py-1 text-xs font-bold text-gold-300">
+            {minesCount} <MineIcon size={14} />
+          </span>
+          <span className="font-mono text-xs font-bold text-gold-300">
+            {started && !gameOver ? `${multiplier.toFixed(2)}x` : "1.00x"}
+          </span>
+        </div>
       </div>
 
       <div className="mx-auto grid max-w-[340px] grid-cols-5 gap-2">
         {Array.from({ length: 25 }).map((_, i) => {
           const isRevealed = revealed.includes(i);
           const isMine = isRevealed && result === "loss";
+          const isGem = isRevealed && !isMine;
           return (
             <motion.button
               key={i}
@@ -93,14 +111,24 @@ export default function Mines() {
               onClick={() => revealCell(i)}
               disabled={!started || gameOver || isRevealed}
               className={cn(
-                "flex aspect-square items-center justify-center rounded-xl border text-2xl transition-all duration-300",
-                !started && "border-white/10 bg-white/5",
-                started && !isRevealed && "border-gold-500/25 bg-gold-500/5 hover:bg-gold-500/15",
-                isRevealed && !isMine && "border-emerald-500/40 bg-emerald-500/15 shadow-[0_0_12px_rgba(16,185,129,0.3)]",
-                isMine && "border-red-500/50 bg-red-500/20 shadow-[0_0_12px_rgba(239,68,68,0.4)]",
+                "relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border transition-all duration-300",
+                !started && "border-white/10 bg-white/5 text-muted-foreground",
+                started && !isRevealed && "border-gold-500/25 bg-gradient-to-br from-gold-500/[0.07] to-transparent text-gold-400/60 hover:border-gold-500/60 hover:bg-gold-500/15",
+                isGem && "border-emerald-500/50 bg-gradient-to-br from-emerald-500/25 to-emerald-900/20 shadow-[0_0_16px_rgba(16,185,129,0.35)]",
+                isMine && "border-red-500/60 bg-gradient-to-br from-red-500/25 to-red-900/20 shadow-[0_0_16px_rgba(239,68,68,0.45)]",
               )}
             >
-              {isRevealed ? (isMine ? "💥" : "💎") : started ? "" : "🔒"}
+              {!started && <TileLock />}
+              {isGem && (
+                <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 300, damping: 16 }}>
+                  <GemIcon size={34} />
+                </motion.div>
+              )}
+              {isMine && (
+                <motion.div initial={{ scale: 0.4, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", stiffness: 260, damping: 12 }}>
+                  <MineIcon size={36} />
+                </motion.div>
+              )}
             </motion.button>
           );
         })}
@@ -112,11 +140,19 @@ export default function Mines() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className={cn(
-              "mb-3 rounded-xl border px-4 py-2.5 text-center text-sm font-bold",
+              "mb-3 flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold",
               result === "win" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400" : "border-red-500/40 bg-red-500/10 text-red-400",
             )}
           >
-            {result === "win" ? `You won ₹${payout.toFixed(2)}! 🎉` : "Boom! You hit a mine 💥"}
+            {result === "win" ? (
+              <>
+                <GemIcon size={18} /> You won ₹{payout.toFixed(2)}!
+              </>
+            ) : (
+              <>
+                <MineIcon size={18} /> Boom! You hit a mine
+              </>
+            )}
           </motion.div>
         )}
         {!started && (

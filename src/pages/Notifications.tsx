@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { ComponentType } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CheckCheck, Trophy, Gift, Info, Megaphone, Coins } from "lucide-react";
+import { BellIcon } from "@/components/casino/gameIcons";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from "@/hooks/useGames";
@@ -100,7 +101,7 @@ export default function Notifications() {
           </div>
         ) : (
           <div className="py-16 text-center">
-            <span className="text-4xl">🔔</span>
+            <span className="opacity-60"><BellIcon size={40} /></span>
             <p className="mt-3 text-sm text-muted-foreground">No notifications yet</p>
           </div>
         )}

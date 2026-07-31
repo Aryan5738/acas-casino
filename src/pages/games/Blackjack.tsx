@@ -5,7 +5,7 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
-import { CardFace, drawCard, handValue, type CardType } from "@/components/casino/Cards";
+import { CardFace, CardBack, drawCard, handValue, type CardType } from "@/components/casino/Cards";
 import { cn } from "@/lib/utils";
 
 export default function Blackjack() {
@@ -94,9 +94,7 @@ export default function Blackjack() {
         <div className="mt-2 flex min-h-36 items-center gap-2">
           {dealer.length === 0 && (
             <div className="flex items-center justify-center gap-2">
-              <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-                <span className="text-2xl">🂠</span>
-              </div>
+              <CardBack />
             </div>
           )}
           {dealer.map((c, i) => (
@@ -115,7 +113,7 @@ export default function Blackjack() {
         <div className="mt-2 flex min-h-36 flex-wrap items-center gap-2">
           {player.length === 0 && (
             <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-              <span className="text-2xl">🂠</span>
+              <CardBack size={76} />
             </div>
           )}
           {player.map((c, i) => (
@@ -134,7 +132,7 @@ export default function Blackjack() {
               result === "push" && "border-white/20 bg-white/5 text-foreground",
             )}
           >
-            {result === "win" ? `Blackjack! +₹${payout.toFixed(2)} 🎉` : result === "loss" ? "Dealer wins" : "Push — bet returned"}
+            {result === "win" ? `Blackjack! +₹${payout.toFixed(2)}` : result === "loss" ? "Dealer wins" : "Push — bet returned"}
           </motion.div>
         )}
       </div>

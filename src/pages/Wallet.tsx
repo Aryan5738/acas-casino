@@ -67,12 +67,12 @@ export default function Wallet() {
 
   const txIcon = (type: string) => {
     switch (type) {
-      case "deposit": return { icon: "📥", color: "text-emerald-400" };
-      case "withdraw": return { icon: "📤", color: "text-red-400" };
-      case "bet": return { icon: "🎲", color: "text-red-400" };
-      case "win": return { icon: "🏆", color: "text-emerald-400" };
-      case "bonus": return { icon: "🎁", color: "text-gold-400" };
-      default: return { icon: "💳", color: "text-muted-foreground" };
+      case "deposit": return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.4" strokeLinecap="round"><path d="M12 5v14M5 12l7 7 7-7" /></svg> };
+      case "withdraw": return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.4" strokeLinecap="round"><path d="M12 19V5M5 12l7-7 7 7" /></svg> };
+      case "bet": return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="2.4" strokeLinecap="round"><path d="M12 4v2m0 12v2M4 12h2m12 0h2M6 6l1.5 1.5M18 6l-1.5 1.5M6 18l1.5-1.5M18 18l-1.5-1.5" /></svg> };
+      case "win": return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21 1.18.54 2.03 2.03 2.03 3.79M9 2h6v7c0 2.76-1.34 5-3 5s-3-2.24-3-5z" /></svg> };
+      case "bonus": return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" /></svg> };
+      default: return { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></svg> };
     }
   };
 
@@ -163,8 +163,9 @@ export default function Wallet() {
                   </button>
                 ))}
               </div>
-              <div className="mt-3 rounded-lg bg-gold-500/10 px-3 py-2 text-[11px] text-gold-300">
-                🎁 +10% instant bonus on every deposit
+              <div className="mt-3 flex items-center gap-2 rounded-lg bg-gold-500/10 px-3 py-2 text-[11px] text-gold-300">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0"><path d="M20 12v10H4V12M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" /></svg>
+                +10% instant bonus on every deposit
               </div>
               <Button className="mt-4 w-full" size="lg" onClick={handleDeposit} disabled={processing}>
                 {processing ? "Processing..." : `Deposit ₹${Number(amount) || 0}`}
@@ -209,18 +210,19 @@ export default function Wallet() {
             {transactions && transactions.length > 0 ? (
               <div className="space-y-2">
                 {transactions.map((t) => {
-                  const { icon, color } = txIcon(t.type);
+                  const { icon } = txIcon(t.type);
                   const isDebit = t.type === "withdraw" || t.type === "bet";
+                  const isCredit = t.type === "deposit" || t.type === "win" || t.type === "bonus";
                   return (
                     <div key={t.id} className="glass flex items-center gap-3 rounded-xl px-3 py-3">
-                      <span className="text-lg">{icon}</span>
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5">{icon}</span>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs font-bold capitalize">{t.type}</p>
                         <p className="text-[10px] text-muted-foreground">
                           {formatDateTime(t.created_at)} · {t.status}
                         </p>
                       </div>
-                      <span className={cn("text-sm font-bold", color)}>
+                      <span className={cn("text-sm font-bold", isCredit ? "text-emerald-400" : "text-red-400")}>
                         {isDebit ? "-" : "+"}₹{t.amount.toFixed(2)}
                       </span>
                     </div>
@@ -229,7 +231,9 @@ export default function Wallet() {
               </div>
             ) : (
               <div className="py-12 text-center">
-                <span className="text-4xl">💳</span>
+                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-white/5 opacity-70">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#71717a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></svg>
+                </span>
                 <p className="mt-3 text-sm text-muted-foreground">No transactions yet</p>
               </div>
             )}

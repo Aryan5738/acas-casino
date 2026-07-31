@@ -5,6 +5,7 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
+import { SLOT_SYMBOLS } from "@/components/casino/gameIcons";
 import { cn, weightedRandom } from "@/lib/utils";
 
 const SYMBOLS = ["🍒", "🍋", "🍇", "🔔", "⭐", "💎", "7️⃣"];
@@ -61,27 +62,31 @@ export default function Slots() {
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-fuchsia-600/10" />
         <div className="relative">
           <div className="mb-3 flex justify-center">
-            <div className="rounded-full bg-gradient-to-r from-gold-400 to-gold-600 px-4 py-1 text-xs font-extrabold text-black">
-              💰 JACKPOT ₹1,00,000
+            <div className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-gold-400 to-gold-600 px-4 py-1 text-xs font-extrabold text-black">
+              <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 0 8 4l4 .6-3 2.9.8 4L6 9.2l-3.8 2.3.8-4-3-2.9L4 4z" fill="#3b2703" /></svg>
+              JACKPOT ₹1,00,000
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 rounded-2xl border border-gold-500/20 bg-black/60 p-3">
             {reels.map((row, r) => (
               <div key={r} className="space-y-1.5">
-                {row.map((s, i) => (
-                  <motion.div
-                    key={`${r}-${i}-${spinning ? "spin" : s}`}
-                    initial={spinning ? { y: -30, opacity: 0.3 } : false}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.15 }}
-                    className={cn(
-                      "flex h-16 items-center justify-center rounded-xl border text-3xl",
-                      i === 1 ? "border-gold-500/50 bg-gold-500/10 shadow-glow" : "border-white/10 bg-white/5",
-                    )}
-                  >
-                    {s}
-                  </motion.div>
-                ))}
+                {row.map((s, i) => {
+                  const Symbol = SLOT_SYMBOLS[s];
+                  return (
+                    <motion.div
+                      key={`${r}-${i}-${spinning ? "spin" : s}`}
+                      initial={spinning ? { y: -30, opacity: 0.3 } : false}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ duration: 0.15 }}
+                      className={cn(
+                        "flex h-16 items-center justify-center rounded-xl border",
+                        i === 1 ? "border-gold-500/50 bg-gold-500/10 shadow-glow" : "border-white/10 bg-white/5",
+                      )}
+                    >
+                      <Symbol size={42} />
+                    </motion.div>
+                  );
+                })}
               </div>
             ))}
           </div>
@@ -91,13 +96,18 @@ export default function Slots() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               className={cn(
-                "mt-4 text-center text-lg font-extrabold",
+                "mt-4 flex items-center justify-center gap-2 text-center text-lg font-extrabold",
                 result.multiplier > 0 ? "text-emerald-400" : "text-red-400",
               )}
             >
-              {result.multiplier > 0
-                ? `${result.symbol} ×${result.multiplier} → +₹${result.payout.toFixed(2)} 🎉`
-                : "No match — spin again!"}
+              {result.multiplier > 0 ? (
+                <>
+                  <SLOT_SYMBOLS[result.symbol] size={26} />
+                  x{result.multiplier} → +₹{result.payout.toFixed(2)}
+                </>
+              ) : (
+                "No match — spin again!"
+              )}
             </motion.p>
           )}
         </div>
@@ -105,12 +115,15 @@ export default function Slots() {
 
       <div className="mt-4 rounded-2xl glass p-4">
         <div className="mb-3 grid grid-cols-4 gap-1.5">
-          {SYMBOLS.slice(0, 4).map((s) => (
-            <div key={s} className="rounded-lg bg-white/5 px-2 py-1.5 text-center">
-              <span className="text-lg">{s}</span>
-              <p className="text-[9px] text-muted-foreground">{SYMBOL_PAYOUTS[s]}×</p>
-            </div>
-          ))}
+          {SYMBOLS.slice(0, 4).map((s) => {
+            const Symbol = SLOT_SYMBOLS[s];
+            return (
+              <div key={s} className="rounded-lg bg-white/5 px-2 py-1.5 text-center">
+                <div className="mx-auto w-8"><Symbol size={30} /></div>
+                <p className="text-[9px] text-muted-foreground">{SYMBOL_PAYOUTS[s]}x</p>
+              </div>
+            );
+          })}
         </div>
         <BetControls bet={bet} setBet={setBet} max={Math.min(50000, engine.balance)} balance={engine.balance} />
         <Button className="mt-4 w-full" size="lg" onClick={play} disabled={spinning || engine.busy}>

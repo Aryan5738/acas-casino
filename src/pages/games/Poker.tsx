@@ -5,7 +5,7 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
-import { CardFace, drawCard, handValue, type CardType } from "@/components/casino/Cards";
+import { CardFace, CardBack, drawCard, handValue, type CardType } from "@/components/casino/Cards";
 import { cn } from "@/lib/utils";
 
 export default function Poker() {
@@ -64,7 +64,7 @@ export default function Poker() {
           <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[9px] font-bold text-red-400">AI Dealer</span>
         </div>
         <div className="mt-2 flex min-h-36 flex-wrap items-center gap-2">
-          {opponent.length === 0 && <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5"><span className="text-2xl">🂠</span></div>}
+          {opponent.length === 0 && <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5"><CardBack size={76} /></div>}
           {opponent.map((c, i) => (
             <CardFace key={`o-${i}`} card={c} hidden={!opponentShown && phase === "done"} small />
           ))}
@@ -77,7 +77,7 @@ export default function Poker() {
           <p className="font-mono text-sm font-bold text-gold-300">{player.length ? (handValue(player) % 21) || 21 : "—"}</p>
         </div>
         <div className="mt-2 flex min-h-36 flex-wrap items-center gap-2">
-          {player.length === 0 && <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5"><span className="text-2xl">🂠</span></div>}
+          {player.length === 0 && <div className="flex h-36 w-24 items-center justify-center rounded-xl border border-white/10 bg-white/5"><CardBack size={76} /></div>}
           {player.map((c, i) => (
             <CardFace key={`p-${i}`} card={c} small />
           ))}
@@ -92,7 +92,7 @@ export default function Poker() {
               result === "win" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400" : "border-red-500/40 bg-red-500/10 text-red-400",
             )}
           >
-            {result === "win" ? `You win the pot! +₹${payout.toFixed(2)} 🎉` : "House wins this round"}
+            {result === "win" ? `You win the pot! +₹${payout.toFixed(2)}` : "House wins this round"}
           </motion.p>
         )}
       </div>

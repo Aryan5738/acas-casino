@@ -114,7 +114,7 @@ export default function Baccarat() {
                 : "border-white/15 bg-white/5 text-muted-foreground",
             )}
           >
-            {result.winner} wins {result.payout > 0 ? `· +₹${result.payout.toFixed(2)} 🎉` : "· you lost"}
+            {result.winner} wins {result.payout > 0 ? `· +₹${result.payout.toFixed(2)}` : "· you lost"}
           </motion.p>
         )}
       </div>

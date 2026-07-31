@@ -5,6 +5,7 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
+import { DragonIcon, MineIcon } from "@/components/casino/gameIcons";
 import { cn, randomInt } from "@/lib/utils";
 
 const ROWS = 8;
@@ -90,7 +91,13 @@ export default function DragonTower() {
                         !activeRow && !wasPicked && "border-white/5 bg-white/[0.03]",
                       )}
                     >
-                      {wasPicked ? (isBomb ? "💥" : "🐉") : ""}
+                      {wasPicked && (
+                        isBomb ? (
+                          <MineIcon size={26} />
+                        ) : (
+                          <DragonIcon size={26} />
+                        )
+                      )}
                     </button>
                   );
                 })}
@@ -108,7 +115,7 @@ export default function DragonTower() {
               result === "win" ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400" : "border-red-500/40 bg-red-500/10 text-red-400",
             )}
           >
-            {result === "win" ? `🏆 Tower complete! +₹${payout.toFixed(2)}` : `You fell at level ${level + 1}`}
+            {result === "win" ? `Tower complete! +₹${payout.toFixed(2)}` : `You fell at level ${level + 1}`}
           </motion.p>
         )}
       </div>

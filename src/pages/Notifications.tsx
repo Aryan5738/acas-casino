@@ -27,16 +27,11 @@ export default function Notifications() {
 
   useEffect(() => {
     if (!user) return;
-    const channel = supabaseChannel();
-    return () => channel;
-  }, [user]);
-
-  function supabaseChannel() {
     const ch = supabase
       .channel("notif-live")
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user!.id}` },
+        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
         () => {
           setLivePulse(true);
           refetch();
@@ -44,8 +39,10 @@ export default function Notifications() {
         },
       )
       .subscribe();
-    return () => supabase.removeChannel(ch);
-  }
+    return () => {
+      void supabase.removeChannel(ch);
+    };
+  }, [user, refetch]);
 
   return (
     <div>

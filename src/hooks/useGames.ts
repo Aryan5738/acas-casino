@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
-import type { Achievement, BetResult, Game, GameHistory, Notification, Transaction } from "@/types";
+import type { Json } from "@/types/database";
+import type { Achievement, Game, GameHistory, Notification, Transaction } from "@/types";
 
 export function useGames() {
   return useQuery({
@@ -144,7 +145,7 @@ export function useSettleGame() {
         p_bet_amount: betAmount,
         p_payout: payout,
         p_result: result,
-        p_data: data ?? {},
+        p_data: (data ?? {}) as Json,
       });
       if (error) throw new Error(error.message);
       return historyId as string;

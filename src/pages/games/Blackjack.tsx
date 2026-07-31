@@ -5,7 +5,8 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
-import { CardFace, CardBack, drawCard, handValue, type CardType } from "@/components/casino/Cards";
+import { CardFace, drawCard, handValue, type CardType } from "@/components/casino/Cards";
+import { CardBack } from "@/components/casino/gameIcons";
 import { cn } from "@/lib/utils";
 
 export default function Blackjack() {

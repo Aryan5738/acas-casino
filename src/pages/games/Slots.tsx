@@ -5,7 +5,7 @@ import { BetControls } from "@/components/casino/BetControls";
 import { GameErrorToast } from "@/components/casino/GameErrorToast";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { Button } from "@/components/ui/button";
-import { SLOT_SYMBOLS } from "@/components/casino/gameIcons";
+import { SLOT_SYMBOLS, SevenIcon } from "@/components/casino/gameIcons";
 import { cn, weightedRandom } from "@/lib/utils";
 
 const SYMBOLS = ["🍒", "🍋", "🍇", "🔔", "⭐", "💎", "7️⃣"];
@@ -24,6 +24,11 @@ function spinReels(): string[][] {
     ]);
   }
   return reels;
+}
+
+function SymbolIcon({ symbol, size = 26 }: { symbol: string; size?: number }) {
+  const Icon = SLOT_SYMBOLS[symbol] ?? SevenIcon;
+  return <Icon size={size} />;
 }
 
 export default function Slots() {
@@ -102,7 +107,7 @@ export default function Slots() {
             >
               {result.multiplier > 0 ? (
                 <>
-                  <SLOT_SYMBOLS[result.symbol] size={26} />
+                  <SymbolIcon symbol={result.symbol} />
                   x{result.multiplier} → +₹{result.payout.toFixed(2)}
                 </>
               ) : (
